@@ -1,39 +1,36 @@
 package com.edutech.progressive.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import com.edutech.progressive.entity.Team;
 import com.edutech.progressive.service.TeamService;
 
-public class TeamServiceImplArraylist implements TeamService  {
-
-    List<Team> teams = new ArrayList<>();
+public class TeamServiceImplArraylist implements TeamService {
+ 
+    private List<Team> lt = new ArrayList<>();
 
     @Override
     public List<Team> getAllTeams() {
-        return teams;
+        return lt;
     }
 
     @Override
     public int addTeam(Team team) {
-        teams.add(team);
-        return teams.size();
+        lt.add(team);
+        return lt.size();
     }
 
     @Override
     public List<Team> getAllTeamsSortedByName() {
-        ArrayList<Team> sortedTeams = new ArrayList<>(teams);
-        Collections.sort(sortedTeams,Comparator.comparing(Team::getTeamName));
+        List<Team> sortedTeams = new ArrayList<>(lt);
+        sortedTeams.sort(Comparator.comparing(Team::getTeamName));
         return sortedTeams;
     }
 
     @Override
-    public void emptyArrayList(){
-        teams.clear();
+    public void emptyArrayList() {
+        lt.clear();
         TeamService.super.emptyArrayList();
     }
-
 }

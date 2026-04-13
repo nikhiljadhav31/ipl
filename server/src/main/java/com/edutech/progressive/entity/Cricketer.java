@@ -1,17 +1,21 @@
 package com.edutech.progressive.entity;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Cricketer implements Comparable<Cricketer>{
-    @Id
+public class Cricketer implements Comparable<Cricketer> {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cricketerId;
     private int teamId;
     private String cricketerName;
     private int age;
     private String nationality;
     private int experience;
-    private String role;
+    private String role; // batsman, bowler, all-rounder, wicket-Keeper
     private int totalRuns;
     private int totalWickets;
 

@@ -4,7 +4,12 @@ import com.edutech.progressive.entity.TicketBooking;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+@RestController
+@RequestMapping("/")
 public class TicketBookingController {
 
     public ResponseEntity<List<TicketBooking>> getAllBookings() {

@@ -1,51 +1,42 @@
 package com.edutech.progressive.service.impl;
-import java.util.*;
+
+import java.sql.SQLException;
+import java.util.List;
+
 import com.edutech.progressive.dao.MatchDAO;
 import com.edutech.progressive.entity.Match;
 import com.edutech.progressive.service.MatchService;
+
 public class MatchServiceImplJdbc implements MatchService {
-   private MatchDAO dao;
-   public MatchServiceImplJdbc(MatchDAO dao) {
-       this.dao = dao;
-   }
-   @Override
-   public List<Match> getAllMatches() {
-       try {
-           return dao.getAllMatches();
-       } catch (Exception e) {
-           throw new RuntimeException(e);
-       }
-   }
-   @Override
-   public Match getMatchById(int id) {
-       try {
-           return dao.getMatchById(id);
-       } catch (Exception e) {
-           throw new RuntimeException(e);
-       }
-   }
-   @Override
-   public Integer addMatch(Match m) {
-       try {
-           return dao.addMatch(m);
-       } catch (Exception e) {
-           throw new RuntimeException(e);
-       }
-   }
-   @Override
-   public void updateMatch(Match m) {
-       try {
-           dao.updateMatch(m);
-       } catch (Exception e) {
-           throw new RuntimeException(e);
-       }
-   }
-   @Override
-   public void deleteMatch(int id) {
-       try {
-           dao.deleteMatch(id);
-       } catch (Exception e) {
-           throw new RuntimeException(e);
-       }
-   }
+
+    private final MatchDAO matchDAO;
+
+    public MatchServiceImplJdbc(MatchDAO matchDAO) {
+        this.matchDAO = matchDAO;
+    }
+
+    @Override
+    public List<Match> getAllMatches() throws SQLException{
+        return matchDAO.getAllMatches();
+    }
+
+    @Override
+    public Match getMatchById(int matchId)throws SQLException {
+        return matchDAO.getMatchById(matchId);
+    }
+
+    @Override
+    public Integer addMatch(Match match) throws SQLException{
+        return matchDAO.addMatch(match);
+    }
+
+    @Override
+    public void updateMatch(Match match) throws SQLException{
+        matchDAO.updateMatch(match);
+    }
+
+    @Override
+    public void deleteMatch(int matchId) throws SQLException{
+        matchDAO.deleteMatch(matchId);
+    }
 }

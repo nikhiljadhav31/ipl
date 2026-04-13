@@ -4,7 +4,11 @@ import com.edutech.progressive.entity.Match;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+@RequestMapping("/")
 public class MatchController {
 
     public ResponseEntity<List<Match>> getAllMatches() {

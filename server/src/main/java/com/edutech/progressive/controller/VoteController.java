@@ -5,7 +5,11 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+@RequestMapping("/")
 public class VoteController {
 
     public ResponseEntity<List<Vote>> getAllVotes() {
