@@ -1,13 +1,11 @@
 package com.edutech.progressive.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.hibernate.annotations.GeneratorType;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "team")
@@ -17,14 +15,35 @@ public class Team implements Comparable<Team> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "team_id")
     private int teamId;
+
     @Column(name = "team_name")
     private String teamName;
-    @Column(name="location")
+
+    @Column(name = "location")
     private String location;
-    @Column(name="owner_name")
+
+    @Column(name = "owner_name")
     private String ownerName;
-    @Column(name="establishment_year")
+
+    @Column(name = "establishment_year")
     private int establishmentYear;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cricketer> cricketers = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "firstTeam")
+    private List<Match> firstTeamMatches = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "secondTeam")
+    private List<Match> secondTeamMatches = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "winnerTeam")
+    private List<Match> wonMatches = new ArrayList<>();
+
     public Team() {
     }
 
@@ -75,9 +94,41 @@ public class Team implements Comparable<Team> {
     public void setEstablishmentYear(int establishmentYear) {
         this.establishmentYear = establishmentYear;
     }
+
+    public List<Cricketer> getCricketers() {
+        return cricketers;
+    }
+
+    public void setCricketers(List<Cricketer> cricketers) {
+        this.cricketers = cricketers;
+    }
+
+    public List<Match> getFirstTeamMatches() {
+        return firstTeamMatches;
+    }
+
+    public void setFirstTeamMatches(List<Match> firstTeamMatches) {
+        this.firstTeamMatches = firstTeamMatches;
+    }
+
+    public List<Match> getSecondTeamMatches() {
+        return secondTeamMatches;
+    }
+
+    public void setSecondTeamMatches(List<Match> secondTeamMatches) {
+        this.secondTeamMatches = secondTeamMatches;
+    }
+
+    public List<Match> getWonMatches() {
+        return wonMatches;
+    }
+
+    public void setWonMatches(List<Match> wonMatches) {
+        this.wonMatches = wonMatches;
+    }
+
     @Override
     public int compareTo(Team o) {
         return this.getTeamName().compareTo(o.getTeamName());
     }
-
 }

@@ -1,9 +1,10 @@
 package com.edutech.progressive.service.impl;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.edutech.progressive.entity.Match;
@@ -12,35 +13,45 @@ import com.edutech.progressive.service.MatchService;
 
 @Service
 public class MatchServiceImplJpa implements MatchService {
-    List<Match> matches = new ArrayList<>();
-    private MatchRepository matchRepository;
-    
-    
+
+    private final MatchRepository matchRepository;
+
+    @Autowired
     public MatchServiceImplJpa(MatchRepository matchRepository) {
         this.matchRepository = matchRepository;
     }
 
-    public List<Match> getAllMatches()throws SQLException{
-        return matches;
+    @Override
+    public List<Match> getAllMatches() throws SQLException {
+        return matchRepository.findAll();
     }
 
-    public Match getMatchById(int matchId)throws SQLException{
-        return null;
+    @Override
+    public Match getMatchById(int matchId) throws SQLException {
+        return matchRepository.findById(matchId).orElse(null);
     }
 
-    public Integer addMatch(Match match)throws SQLException{
-        return -1;
+    @Override
+    public Integer addMatch(Match match) throws SQLException {
+        Match savedMatch = matchRepository.save(match);
+        return savedMatch.getMatchId();
     }
 
-    public void updateMatch(Match match)throws SQLException{
-        
+    @Override
+    public void updateMatch(Match match) throws SQLException {
+        matchRepository.save(match);
     }
 
-    public void deleteMatch(int matchId)throws SQLException{
-
+    @Override
+    public void deleteMatch(int matchId) throws SQLException {
+        matchRepository.deleteById(matchId);
     }
 
-    public List<Match> getAllMatchesByStatus(String status) throws SQLException{
-        return null;
+    @Override
+    public List<Match> getAllMatchesByStatus(String status) throws SQLException {
+        return matchRepository.findAll()
+                .stream()
+                .filter(match -> match.getStatus() != null && match.getStatus().equalsIgnoreCase(status))
+                .collect(Collectors.toList());
     }
 }
