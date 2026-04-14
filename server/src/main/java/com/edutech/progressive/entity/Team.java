@@ -7,33 +7,51 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GeneratorType;
+import org.hibernate.annotations.CollectionId;
 
 @Entity
-@Table(name = "team")
-public class Team implements Comparable<Team> {
+@Table(name="cricketer")
+public class Cricketer implements Comparable<Cricketer> {
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+@Column(name = "cricketer_id")
+private int cricketerId;
+@Column(name="team_id")
+private int teamId;
+@Column(name="cricketer_name")
+private String cricketerName;
+@Column(name="age")
+private int age;
+private String nationality;
+private int experience;
+private String role;
+@Column(name="total_runs")
+private int totalRuns;
+@Column(name="total_wickets")
+private int totalWickets;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "team_id")
-    private int teamId;
-    @Column(name = "team_name")
-    private String teamName;
-    @Column(name="location")
-    private String location;
-    @Column(name="owner_name")
-    private String ownerName;
-    @Column(name="establishment_year")
-    private int establishmentYear;
-    public Team() {
+public Cricketer() {
     }
 
-    public Team(int teamId, String teamName, String location, String ownerName, int establishmentYear) {
+    public Cricketer(int cricketerId, int teamId, String cricketerName, int age, String nationality, int experience,
+            String role, int totalRuns, int totalWickets) {
+        this.cricketerId = cricketerId;
         this.teamId = teamId;
-        this.teamName = teamName;
-        this.location = location;
-        this.ownerName = ownerName;
-        this.establishmentYear = establishmentYear;
+        this.cricketerName = cricketerName;
+        this.age = age;
+        this.nationality = nationality;
+        this.experience = experience;
+        this.role = role;
+        this.totalRuns = totalRuns;
+        this.totalWickets = totalWickets;
+    }
+
+    public int getCricketerId() {
+        return cricketerId;
+    }
+
+    public void setCricketerId(int cricketerId) {
+        this.cricketerId = cricketerId;
     }
 
     public int getTeamId() {
@@ -44,40 +62,65 @@ public class Team implements Comparable<Team> {
         this.teamId = teamId;
     }
 
-    public String getTeamName() {
-        return teamName;
+    public String getCricketerName() {
+        return cricketerName;
     }
 
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
+    public void setCricketerName(String cricketerName) {
+        this.cricketerName = cricketerName;
     }
 
-    public String getLocation() {
-        return location;
+    public int getAge() {
+        return age;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setAge(int age) {
+        this.age = age;
     }
 
-    public String getOwnerName() {
-        return ownerName;
+    public String getNationality() {
+        return nationality;
     }
 
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 
-    public int getEstablishmentYear() {
-        return establishmentYear;
+    public int getExperience() {
+        return experience;
     }
 
-    public void setEstablishmentYear(int establishmentYear) {
-        this.establishmentYear = establishmentYear;
+    public void setExperience(int experience) {
+        this.experience = experience;
     }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public int getTotalRuns() {
+        return totalRuns;
+    }
+
+    public void setTotalRuns(int totalRuns) {
+        this.totalRuns = totalRuns;
+    }
+
+    public int getTotalWickets() {
+        return totalWickets;
+    }
+
+    public void setTotalWickets(int totalWickets) {
+        this.totalWickets = totalWickets;
+    }
+
     @Override
-    public int compareTo(Team o) {
-        return this.getTeamName().compareTo(o.getTeamName());
+    public int compareTo(Cricketer o) {
+        return Integer.compare(this.getExperience(),o.getExperience());
     }
 
 }
