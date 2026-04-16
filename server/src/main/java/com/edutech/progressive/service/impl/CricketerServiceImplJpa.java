@@ -3,23 +3,24 @@ package com.edutech.progressive.service.impl;
 import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import com.edutech.progressive.entity.Cricketer;
+import com.edutech.progressive.exception.TeamCricketerLimitExceededException;
 import com.edutech.progressive.repository.CricketerRepository;
+import com.edutech.progressive.repository.VoteRepository;
 import com.edutech.progressive.service.CricketerService;
 
 @Service
-@Primary
 public class CricketerServiceImplJpa implements CricketerService {
 
-    private final CricketerRepository cricketerRepository;
+    private CricketerRepository cricketerRepository;
 
-    @Autowired
+    @Autowired(required = false)
+    private VoteRepository voteRepository;
+
     public CricketerServiceImplJpa(CricketerRepository cricketerRepository) {
         this.cricketerRepository = cricketerRepository;
     }
@@ -31,25 +32,43 @@ public class CricketerServiceImplJpa implements CricketerService {
 
     @Override
     public Integer addCricketer(Cricketer cricketer) throws SQLException {
-        Cricketer savedCricketer = cricketerRepository.save(cricketer);
-        return savedCricketer.getCricketerId();
+        int teamId = cricketer.getTeamId();
+        if (teamId != 0) {
+            long count = cricketerRepository.countByTeam_TeamId(teamId);
+            if (count >= 11) {
+                throw new TeamCricketerLimitExceededException("Team cricketer limit exceeded");
+            }
+        }
+        return cricketerRepository.save(cricketer).getCricketerId();
     }
 
     @Override
     public List<Cricketer> getAllCricketersSortedByExperience() throws SQLException {
-        return cricketerRepository.findAll()
-                .stream()
-                .sorted(Comparator.comparing(Cricketer::getExperience))
-                .collect(Collectors.toList());
+        List<Cricketer> list = cricketerRepository.findAll();
+        list.sort(Comparator.comparingInt(Cricketer::getExperience));
+        return list;
     }
 
     @Override
     public void updateCricketer(Cricketer cricketer) throws SQLException {
+        int teamId = cricketer.getTeamId();
+        if (teamId != 0) {
+            Cricketer existing = cricketerRepository.findByCricketerId(cricketer.getCricketerId());
+            long count = cricketerRepository.countByTeam_TeamId(teamId);
+            if (count >= 11) {
+                if (existing == null || existing.getTeamId() != teamId) {
+                    throw new TeamCricketerLimitExceededException("Team cricketer limit exceeded");
+                }
+            }
+        }
         cricketerRepository.save(cricketer);
     }
 
     @Override
     public void deleteCricketer(int cricketerId) throws SQLException {
+        if (voteRepository != null) {
+            voteRepository.deleteByCricketerId(cricketerId);
+        }
         cricketerRepository.deleteById(cricketerId);
     }
 

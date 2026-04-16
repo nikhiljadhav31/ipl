@@ -5,12 +5,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.edutech.progressive.entity.Cricketer;
 import com.edutech.progressive.service.CricketerService;
 
 @Service
+@Profile("arraylist")
 public class CricketerServiceImplArraylist implements CricketerService {
 
     List<Cricketer> cricketers = new ArrayList<>();

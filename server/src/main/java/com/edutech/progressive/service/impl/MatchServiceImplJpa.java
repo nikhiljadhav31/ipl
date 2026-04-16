@@ -3,25 +3,25 @@ package com.edutech.progressive.service.impl;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.edutech.progressive.entity.Match;
+import com.edutech.progressive.exception.NoMatchesFoundException;
 import com.edutech.progressive.repository.MatchRepository;
 import com.edutech.progressive.service.MatchService;
+import com.edutech.progressive.repository.TicketBookingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class MatchServiceImplJpa implements MatchService {
 
-    @Autowired
     private MatchRepository matchRepository;
-
-    public MatchServiceImplJpa() {
-    }
 
     public MatchServiceImplJpa(MatchRepository matchRepository) {
         this.matchRepository = matchRepository;
     }
+    @Autowired(required = false)
+private TicketBookingRepository ticketBookingRepository;
 
     @Override
     public List<Match> getAllMatches() throws SQLException {
@@ -35,34 +35,28 @@ public class MatchServiceImplJpa implements MatchService {
 
     @Override
     public Integer addMatch(Match match) throws SQLException {
-        Match savedMatch = matchRepository.save(match);
-        return savedMatch.getMatchId();
+        return matchRepository.save(match).getMatchId();
     }
 
     @Override
     public void updateMatch(Match match) throws SQLException {
-        Match existingMatch = matchRepository.findByMatchId(match.getMatchId());
+        matchRepository.save(match);
+    }
 
-        if (existingMatch != null) {
-            existingMatch.setFirstTeam(match.getFirstTeam());
-            existingMatch.setSecondTeam(match.getSecondTeam());
-            existingMatch.setMatchDate(match.getMatchDate());
-            existingMatch.setVenue(match.getVenue());
-            existingMatch.setResult(match.getResult());
-            existingMatch.setStatus(match.getStatus());
-            existingMatch.setWinnerTeam(match.getWinnerTeam());
+@Override
+public void deleteMatch(int matchId) throws SQLException {
+    if (ticketBookingRepository != null) {
+        ticketBookingRepository.deleteByMatchId(matchId);
+    }
+    matchRepository.deleteById(matchId);
+}
 
-            matchRepository.save(existingMatch);
+    @Override
+    public List<Match> getAllMatchesByStatus(String status) throws SQLException {
+        List<Match> list = matchRepository.findAllByStatus(status);
+        if (list == null || list.isEmpty()) {
+            throw new NoMatchesFoundException("No matches found");
         }
-    }
-
-    @Override
-    public void deleteMatch(int matchId) throws SQLException {
-        matchRepository.deleteById(matchId);
-    }
-
-    @Override
-    public List<Match> getAllMatchesByStatus(String status) {
-        return matchRepository.findAllByStatus(status);
+        return list;
     }
 }
