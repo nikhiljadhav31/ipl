@@ -48,13 +48,13 @@ public class TeamDAOImpl implements TeamDAO {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new Team(
-                        teamId,
-                        resultSet.getString("team_name"),
-                        resultSet.getString("location"),
-                        resultSet.getString("owner_name"),
-                        resultSet.getInt("establishment_year")
-                    );
+                    Team team = new Team();
+                    team.setTeamId(teamId);
+                    team.setTeamName(resultSet.getString("team_name"));
+                    team.setLocation(resultSet.getString("location"));
+                    team.setOwnerName(resultSet.getString("owner_name"));
+                    team.setEstablishmentYear(resultSet.getInt("establishment_year"));
+                    return team;
                 }
             }
         }
@@ -101,13 +101,13 @@ public class TeamDAOImpl implements TeamDAO {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                teams.add(new Team(
-                        resultSet.getInt("team_id"),
-                        resultSet.getString("team_name"),
-                        resultSet.getString("location"),
-                        resultSet.getString("owner_name"),
-                        resultSet.getInt("establishment_year")
-                ));
+                Team team = new Team();
+                team.setTeamId(resultSet.getInt("team_id"));
+                team.setTeamName(resultSet.getString("team_name"));
+                team.setLocation(resultSet.getString("location"));
+                team.setOwnerName(resultSet.getString("owner_name"));
+                team.setEstablishmentYear(resultSet.getInt("establishment_year"));
+                teams.add(team);
             }
         }
 

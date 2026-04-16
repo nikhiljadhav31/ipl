@@ -2,7 +2,6 @@ package com.edutech.progressive.service.impl;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +13,12 @@ import com.edutech.progressive.service.MatchService;
 @Service
 public class MatchServiceImplJpa implements MatchService {
 
-    private final MatchRepository matchRepository;
-
     @Autowired
+    private MatchRepository matchRepository;
+
+    public MatchServiceImplJpa() {
+    }
+
     public MatchServiceImplJpa(MatchRepository matchRepository) {
         this.matchRepository = matchRepository;
     }
@@ -28,7 +30,7 @@ public class MatchServiceImplJpa implements MatchService {
 
     @Override
     public Match getMatchById(int matchId) throws SQLException {
-        return matchRepository.findById(matchId).orElse(null);
+        return matchRepository.findByMatchId(matchId);
     }
 
     @Override
@@ -39,7 +41,19 @@ public class MatchServiceImplJpa implements MatchService {
 
     @Override
     public void updateMatch(Match match) throws SQLException {
-        matchRepository.save(match);
+        Match existingMatch = matchRepository.findByMatchId(match.getMatchId());
+
+        if (existingMatch != null) {
+            existingMatch.setFirstTeam(match.getFirstTeam());
+            existingMatch.setSecondTeam(match.getSecondTeam());
+            existingMatch.setMatchDate(match.getMatchDate());
+            existingMatch.setVenue(match.getVenue());
+            existingMatch.setResult(match.getResult());
+            existingMatch.setStatus(match.getStatus());
+            existingMatch.setWinnerTeam(match.getWinnerTeam());
+
+            matchRepository.save(existingMatch);
+        }
     }
 
     @Override
@@ -48,10 +62,7 @@ public class MatchServiceImplJpa implements MatchService {
     }
 
     @Override
-    public List<Match> getAllMatchesByStatus(String status) throws SQLException {
-        return matchRepository.findAll()
-                .stream()
-                .filter(match -> match.getStatus() != null && match.getStatus().equalsIgnoreCase(status))
-                .collect(Collectors.toList());
+    public List<Match> getAllMatchesByStatus(String status) {
+        return matchRepository.findAllByStatus(status);
     }
 }

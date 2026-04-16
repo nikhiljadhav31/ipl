@@ -1,14 +1,20 @@
 package com.edutech.progressive.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "team")
+@JsonIgnoreProperties({"cricketers", "firstTeamMatches", "secondTeamMatches", "wonMatches"})
 public class Team implements Comparable<Team> {
 
     @Id
@@ -28,31 +34,33 @@ public class Team implements Comparable<Team> {
     @Column(name = "establishment_year")
     private int establishmentYear;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Cricketer> cricketers = new ArrayList<>();
+    @OneToMany(mappedBy = "team")
+    private List<Cricketer> cricketers;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "firstTeam")
-    private List<Match> firstTeamMatches = new ArrayList<>();
+    private List<Match> firstTeamMatches;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "secondTeam")
-    private List<Match> secondTeamMatches = new ArrayList<>();
+    private List<Match> secondTeamMatches;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "winnerTeam")
-    private List<Match> wonMatches = new ArrayList<>();
+    private List<Match> wonMatches;
 
     public Team() {
     }
 
-    public Team(int teamId, String teamName, String location, String ownerName, int establishmentYear) {
+    public Team(int teamId, String teamName, String location, String ownerName, int establishmentYear,
+            List<Cricketer> cricketers, List<Match> firstTeamMatches, List<Match> secondTeamMatches,
+            List<Match> wonMatches) {
         this.teamId = teamId;
         this.teamName = teamName;
         this.location = location;
         this.ownerName = ownerName;
         this.establishmentYear = establishmentYear;
+        this.cricketers = cricketers;
+        this.firstTeamMatches = firstTeamMatches;
+        this.secondTeamMatches = secondTeamMatches;
+        this.wonMatches = wonMatches;
     }
 
     public int getTeamId() {
